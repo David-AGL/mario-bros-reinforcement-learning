@@ -1,0 +1,9 @@
+{
+  "_nota": "level_length = x_pos al tomar la bandera. null hasta medirlo (día 1, P3).",
+  "train": {"SuperMarioBros-1-1-v0": {"level_length": null}},
+  "unseen": {
+    "SuperMarioBros-2-1-v0": {"level_length": null},
+    "SuperMarioBros-3-1-v0": {"level_length": null}
+  },
+  "optional": {"SuperMarioBros-1-2-v0": {"level_length": null}}
+}

@@ -1,7 +1,14 @@
-# mario-bros-reinforcement-learning
+# Mario Bros con aprendizaje por refuerzo (DQN + baseline PPO)
 
-Proyecto de aprendizaje por refuerzo aplicado a Super Mario Bros, cuyo objetivo es desarrollar y evaluar un agente inteligente capaz de aprender a jugar mediante interacción con el entorno. Se utiliza Deep Q-Network (DQN) como algoritmo principal y Proximal Policy Optimization (PPO) como baseline comparativo.
+## Instalación
+1. Instalar PyTorch según tu CUDA (https://pytorch.org).
+2. `pip install -r requirements.txt`
+3. `python scripts/smoke_test_env.py` (debe terminar en `SMOKE TEST OK`).
 
-El proyecto contempla el entrenamiento de los agentes, la evaluación de su desempeño en niveles conocidos y no vistos, el análisis de métricas de progreso y tasa de completado, y el desarrollo de una interfaz para visualizar su comportamiento y comparar resultados.
+## Entorno (env-v1)
+SIMPLE_MOVEMENT · frame skip 4 · gris · 84×84 · stack 4 · observación `(4, 84, 84)` uint8.
+Ver `env.py`.
 
-El objetivo final es obtener resultados reproducibles, analizar las diferencias entre ambos algoritmos y explorar la capacidad de generalización de los agentes a nuevos niveles.
+## Flujo híbrido
+Entrenar en Colab con `notebooks/colab_train.ipynb` (checkpoints en Drive); evaluar y visualizar en local.
+`dqn/train.py` acepta `--models-root` y `--logs-root` para separar dónde se guardan modelos y logs.

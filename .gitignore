@@ -1,0 +1,8 @@
+models/
+videos/
+runs/
+__pycache__/
+*.pyc
+.venv/
+venv/
+.ipynb_checkpoints/

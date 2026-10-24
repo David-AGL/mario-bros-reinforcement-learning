@@ -1,0 +1,14 @@
+# Probado: Python 3.12 (también debería funcionar en 3.10/3.11).
+# Instalar PyTorch ANTES con el comando de https://pytorch.org según tu CUDA, y luego:
+#   pip install -r requirements.txt
+numpy<2                      # nes-py 8.2.1 no es compatible con NumPy 2
+gym==0.26.2                  # requerido por gym-super-mario-bros / nes-py
+nes-py==8.2.1
+gym-super-mario-bros==7.4.0
+gymnasium==0.29.1            # API que usa Stable-Baselines3 2.3.x
+stable-baselines3==2.3.2
+opencv-python-headless
+tensorboard
+pandas
+matplotlib
+psutil
