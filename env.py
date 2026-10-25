@@ -1,11 +1,17 @@
-"""Entorno de Mario Bros para RL (env-v1).
+"""Entorno de Mario Bros para RL (env-v2).
 
 Preprocesamiento CONGELADO (cambiarlo invalida la comparabilidad entre modelos):
   - Acciones: SIMPLE_MOVEMENT (7 acciones discretas; la 0 es NOOP)
   - Frame skip: 4 (la acción se repite 4 frames y se suman las recompensas)
   - Escala de grises + resize 84x84 (INTER_AREA)
   - Stack de 4 frames -> observación (4, 84, 84) uint8 en [0, 255]
-  - Reward: la del entorno (sin clipping ni escalado); se documenta en el README
+  - Reward: la del entorno (avance en x, penalización por tiempo, -15 al morir; sin clipping
+    ni escalado) más bonos de shaping, aplicados una vez por step del agente:
+      * Bandera (info["flag_get"]):                         +500
+      * Hongo o flor (info["status"] sube de nivel):        +100
+      * Perder el poder (info["status"] baja, sin morir):   -10
+    El desglose del step se guarda en info["reward_env"] e info["reward_bonus"].
+    (env-v1 usaba solo la recompensa del entorno.)
   - noop_max: al reiniciar se aplican k NOOPs aleatorios, k ~ U{0..noop_max}
     (k se registra en info["noop_used"]). noop_max=0 desactiva el mecanismo.
 
@@ -25,11 +31,18 @@ import gym_super_mario_bros
 from gym_super_mario_bros.actions import SIMPLE_MOVEMENT
 from nes_py.wrappers import JoypadSpace
 
-ENV_VERSION = "env-v1"
+ENV_VERSION = "env-v2"
 FRAME_SKIP = 4
 FRAME_SIZE = 84
 N_STACK = 4
 NOOP_ACTION = 0  # índice de ['NOOP'] en SIMPLE_MOVEMENT
+
+# Bonos de shaping (se suman a la recompensa del entorno)
+FLAG_BONUS = 500.0
+POWERUP_BONUS = 100.0
+POWER_LOSS_PENALTY = -10.0
+# Nivel de poder según info["status"] de gym_super_mario_bros
+STATUS_RANK = {"small": 0, "tall": 1, "fireball": 2}
 
 
 def level_id(world: int, stage: int, version: str = "v0") -> str:
@@ -66,6 +79,8 @@ class MarioEnv(gym.Env):
         self._frames: deque[np.ndarray] = deque(maxlen=N_STACK)
         self._steps = 0
         self._last_raw = None
+        self._status_rank = 0
+        self._flag_rewarded = False
 
     # ---------- utilidades ----------
     @staticmethod
@@ -102,6 +117,8 @@ class MarioEnv(gym.Env):
             self._frames.append(frame)
 
         info = dict(info)
+        self._status_rank = STATUS_RANK.get(info.get("status", "small"), 0)
+        self._flag_rewarded = False
         info["noop_used"] = noop_used
         info["env_id"] = self.env_id
         return self._obs(), info
@@ -121,12 +138,31 @@ class MarioEnv(gym.Env):
         self._frames.append(self._process(raw))
         self._steps += 1
 
+        # ---------- shaping ----------
+        bonus = 0.0
+        flag = bool(info.get("flag_get", False))
+        if flag and not self._flag_rewarded:
+            bonus += FLAG_BONUS
+            self._flag_rewarded = True
+        rank = STATUS_RANK.get(info.get("status", "small"), self._status_rank)
+        if rank > self._status_rank:
+            bonus += POWERUP_BONUS
+        elif rank < self._status_rank and not (terminated and not flag):
+            # Si murió, ya lo castiga el -15 del entorno; no se cobra doble.
+            bonus += POWER_LOSS_PENALTY
+        self._status_rank = rank
+
+        info = dict(info)
+        info["reward_env"] = total_reward
+        info["reward_bonus"] = bonus
+        total_reward += bonus
+
         truncated = bool(
             not terminated
             and self.max_episode_steps is not None
             and self._steps >= self.max_episode_steps
         )
-        return self._obs(), total_reward, terminated, truncated, dict(info)
+        return self._obs(), total_reward, terminated, truncated, info
 
     def render(self):
         if self.render_mode == "rgb_array":

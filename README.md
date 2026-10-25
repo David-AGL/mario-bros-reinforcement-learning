@@ -5,8 +5,9 @@
 2. `pip install -r requirements.txt`
 3. `python scripts/smoke_test_env.py` (debe terminar en `SMOKE TEST OK`).
 
-## Entorno (env-v1)
+## Entorno (env-v2)
 SIMPLE_MOVEMENT · frame skip 4 · gris · 84×84 · stack 4 · observación `(4, 84, 84)` uint8.
+Recompensa: la del entorno (avance, tiempo, −15 al morir) + bandera +500, hongo/flor +100, perder el poder −10.
 Ver `env.py`.
 
 ## Flujo híbrido
