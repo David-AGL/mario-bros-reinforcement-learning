@@ -1,8 +1,20 @@
-models/
+# Modelos y checkpoints pesados
+models/**/*.zip
+models/**/*.pkl
+
+# Logs de TensorBoard
+runs/**/events.out.tfevents.*
+
+# Videos generados
 videos/
-runs/
+
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
+
+# Entornos virtuales
 .venv/
 venv/
+
+# Jupyter
 .ipynb_checkpoints/

@@ -1,0 +1,6 @@
+algo,seed,level,episode,completed,max_x,steps,reward,elapsed_seconds,prediction_mode,eval_seed,checkpoint_steps,noop_max,noop_used,level_length,progress,death_x,end_x,truncated,git_commit
+random,,SuperMarioBros-1-1-v0,0,0,657,183,564.0,1.5,uniform_random,100,0,30,23,,,657,657,0,76c1262
+random,,SuperMarioBros-1-1-v0,1,0,299,42,233.0,0.3,uniform_random,101,0,30,9,,,299,299,0,76c1262
+random,,SuperMarioBros-1-1-v0,2,0,723,2002,267.0,16.39,uniform_random,102,0,30,13,,,722,722,0,76c1262
+random,,SuperMarioBros-1-1-v0,3,0,793,1111,515.0,8.52,uniform_random,103,0,30,17,,,793,793,0,76c1262
+random,,SuperMarioBros-1-1-v0,4,0,686,114,607.0,0.84,uniform_random,104,0,30,21,,,686,686,0,76c1262

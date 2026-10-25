@@ -1,0 +1,6 @@
+algo,seed,level,episode,completed,max_x,steps,reward,elapsed_seconds,prediction_mode,eval_seed,checkpoint_steps,noop_max,noop_used,level_length,progress,death_x,end_x,truncated,git_commit
+dqn,1,SuperMarioBros-1-1-v0,0,0,899,147,814.0,1.71,epsilon_greedy_0.05,100,50000,30,23,,,898,898,0,76c1262
+dqn,1,SuperMarioBros-1-1-v0,1,0,691,102,613.0,0.95,epsilon_greedy_0.05,101,50000,30,9,,,691,691,0,76c1262
+dqn,1,SuperMarioBros-1-1-v0,2,0,312,27,249.0,0.25,epsilon_greedy_0.05,102,50000,30,13,,,312,312,0,76c1262
+dqn,1,SuperMarioBros-1-1-v0,3,0,313,30,249.0,0.28,epsilon_greedy_0.05,103,50000,30,17,,,313,313,0,76c1262
+dqn,1,SuperMarioBros-1-1-v0,4,0,312,27,249.0,0.26,epsilon_greedy_0.05,104,50000,30,21,,,312,312,0,76c1262
