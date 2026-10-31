@@ -10,12 +10,13 @@ SIMPLE_MOVEMENT · frame skip 4 · gris · 84×84 · stack 4 · observación `(4
 Recompensa: la del entorno (avance, tiempo, −15 al morir) + bandera +500, hongo/flor +100, perder el poder −10.
 Ver `env.py`.
 
-## Flujo híbrido
-Entrenar en Colab con `notebooks/colab_train.ipynb` (checkpoints en Drive); evaluar y visualizar en local.
-`dqn/train.py` acepta `--models-root` y `--logs-root` para separar dónde se guardan modelos y logs.
+## Flujo híbrido y entrenamiento
+- **Entrenamiento estándar en Colab**: `notebooks/colab_train.ipynb` (checkpoints sincronizados en Google Drive; evaluar y visualizar en local).
+- **Transfer Learning en Colab**: `notebooks/transfer_learning_mario.ipynb` (inicializa la red convolucional `NatureCNN` con pesos preentrenados de un agente PPO desde Hugging Face para acelerar la convergencia).
+- **Entrenamiento local CLI**: `dqn/train.py` acepta `--models-root` y `--logs-root` para separar dónde se guardan modelos y logs.
 
 ## Evaluación
-```
+```bash
 python evaluate.py --algo random --seeds 100-104
 python evaluate.py --algo dqn --model models/dqn/dqn_s1/dqn_s1_final.zip --seeds 100-104 --out results/val
 python evaluate.py --algo dqn --model ... --mode deterministic --seeds 100-104 --record
@@ -23,3 +24,9 @@ python evaluate.py --algo dqn --model ... --mode deterministic --seeds 100-104 -
 Protocolo: 1 episodio por semilla, no-ops 0–30 al reiniciar, DQN epsilon-greedy fijo (0.05) aplicado en
 `evaluate.py`, PPO muestreando la política; `--mode deterministic` como resultado secundario.
 Salida: `<out>/<tag>.csv` y `.json`. `progress` requiere `level_length` en `levels.json`.
+
+## Interfaz visual
+Ejecutar la app de Streamlit para auditar partidas, comparar métricas de `results/` y reproducir repeticiones grabadas:
+```bash
+streamlit run app/main.py
+```
