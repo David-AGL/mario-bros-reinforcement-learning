@@ -37,26 +37,26 @@ Dado que la representación visual es idéntica independientemente del algoritmo
 ### 4. Creación del modelo DQN e inyección de pesos (Paso 3)
 - Instanciación de `DQN("CnnPolicy", ...)` con el contrato del entorno `env-v2` (`SIMPLE_MOVEMENT`, 7 acciones).
 - Carga de los pesos visuales mediante `load_state_dict(..., strict=False)` tanto en la política activa como en la red objetivo (`q_net_target`).
-- Opción de congelar temporalmente los gradientes de la CNN (`requires_grad = False`) para realizar *feature extraction* puro antes de descongelar.
+- Congelación controlada de la CNN (`requires_grad = False`) durante la fase inicial para realizar *feature extraction* antes del ajuste fino.
 
-### 5. Entrenamiento y persistencia (Paso 4)
-- Configuración de hiperparámetros adaptados para fine-tuning (menor exploración inicial y `learning_rate` conservador).
+### 5. Entrenamiento por fases (Paso 4)
+- **Fase 1 (0 -> 50,000 pasos):** CNN congelada (`LR = 1e-4`), entrenando rápidamente la cabeza lineal de Q-values.
+- **Fase 2 (50,000 -> 500,000 pasos):** Descongelamiento progresivo mediante `UnfreezeCNNCallback` con tasa de aprendizaje reducida (`LR = 1e-5`) para ajuste fino (*fine-tuning*) sin destruir los filtros convolucionales.
 - Sincronización periódica en segundo plano hacia Google Drive para tolerar caídas de sesión.
-- Guardado de checkpoints intermedios (`100k`, `200k`, etc.) y modelo final.
 
 ### 6. Evaluación y comparación estructurada (Paso 5)
-- Ejecución del protocolo de evaluación sobre los checkpoints generados (semillas 100–104).
-- Extracción de métricas: `max_x`, progreso porcentual, recompensas acumuladas y tasa de banderas conseguidas (`completed`).
-- Comparación tabular del agente transfer vs. baselines entrenados desde cero.
+- Ejecución del protocolo de evaluación estándar de 5 semillas (`seeds 100-104`).
+- **Pico de rendimiento del proyecto:**
+  - El checkpoint `dqn_adv_450000_steps.zip` (450k pasos) logró el mejor desempeño global de todo el proyecto con un promedio de **1,488.4 px (47.1% del nivel)**.
+  - En la semilla individual `104` alcanzó un récord absoluto de **2,466 px (78.0% del nivel)** superando obstáculos avanzados como fosos y tuberías altas finales.
 
-### 7. Secciones avanzadas y experimentales
-- **Entrenamiento por fases:** Implementación de un `BaseCallback` que descongela gradualmente las capas de la CNN a partir de un umbral de pasos (*fine-tuning progresivo*).
-- **Grabación y reproducción de video:** Captura de episodios deterministas del agente campeón con OpenCV y renderizado interactivo en el notebook con HTML5 y base64.
-- **Espacio de acciones complejo y Reward Shaping (experimental):** Exploración de un wrapper personalizado (`CustomMarioRewardWrapper`) con penalización por estancamiento horizontal y prueba de `COMPLEX_MOVEMENT` (12 acciones).
+### 7. Grabación y Reproducción de Video Web (Paso 6)
+- Grabación reproducible con `EVAL_SEED = 104` y `noop_max = 30` (21 no-ops iniciales) replicando el episodio récord de 412 pasos.
+- Conversión automática con `ffmpeg` a códec web `H.264` (`libx264`, `pix_fmt yuv420p`) para visualización fluida en navegadores.
+- Renderizado interactivo directamente en la celda con HTML5 y base64, más persistencia automática del video `.mp4` en Google Drive.
 
 ---
 
 ## Consideraciones de interoperabilidad con el repositorio
 
-- Los checkpoints estándar entrenados con las primeras secciones del notebook utilizan 7 acciones (`SIMPLE_MOVEMENT`) y son **100% compatibles** con `evaluate.py`, `scripts/` y la interfaz de `app/main.py`.
-- Si se ejecutan los experimentos opcionales con `COMPLEX_MOVEMENT` (12 acciones), dichos checkpoints requieren registrar explícitamente el espacio de acción modificado para no romper el contrato de evaluación predeterminado del proyecto.
+- Los checkpoints entrenados utilizan 7 acciones (`SIMPLE_MOVEMENT`) y son **100% compatibles** con `evaluate.py`, `scripts/` y la interfaz de `app/main.py`.
