@@ -39,6 +39,7 @@ from stable_baselines3.common.vec_env import DummyVecEnv
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from env import ENV_VERSION, FRAME_SIZE, N_STACK, make_env  # noqa: E402
+from wrappers import ScaleReward  # noqa: E402
 
 
 # --------------------------------------------------------------------------- config
@@ -49,6 +50,7 @@ class DQNConfig:
     noop_max: int = 30  # DECISIÓN A ACORDAR: no-ops aleatorios también en entrenamiento
     seed: int = 1
     total_steps: int = 1_000_000  # presupuesto: fijar tras medir FPS (igual para DQN y PPO)
+    reward_scale: float = 1.0  # solo lo ve el algoritmo (1.0 = como antes; PPO usa 0.01 por defecto)
     # DQN (tabla 4 del plan)
     learning_rate: float = 1e-4
     buffer_size: int = 100_000
@@ -164,7 +166,10 @@ class MarioDQNCallback(BaseCallback):
 def build_env(cfg: DQNConfig, log_dir: Path):
     def _thunk():
         env = make_env(cfg.level, noop_max=cfg.noop_max)
-        return Monitor(env, filename=None)  # info["episode"] = {r, l, t}
+        env = Monitor(env, filename=None)  # info["episode"] = {r, l, t} (recompensa cruda)
+        if cfg.reward_scale != 1.0:
+            env = ScaleReward(env, cfg.reward_scale)
+        return env
     venv = DummyVecEnv([_thunk])
     venv.seed(cfg.seed)
     return venv

@@ -38,7 +38,7 @@ CSV_FIELDS = [
     "algo", "seed", "level", "episode", "completed", "max_x", "steps", "reward",
     "elapsed_seconds", "prediction_mode",
     "eval_seed", "checkpoint_steps", "noop_max", "noop_used", "level_length", "progress",
-    "death_x", "end_x", "truncated", "git_commit",
+    "death_x", "end_x", "truncated", "env_version", "git_commit",
 ]
 VIDEO_FPS = 15  # 60 fps del NES / frame skip 4
 
@@ -79,6 +79,9 @@ def load_level_length(level: str, path: Path = ROOT / "levels.json"):
 
 
 # --------------------------------------------------------------------------- políticas
+# Evita deserializar schedules (lr, clip) guardados en el modelo: solo hace falta inferencia.
+_NO_SCHEDULES = {"learning_rate": 0.0, "lr_schedule": lambda _: 0.0, "clip_range": lambda _: 0.0}
+
 class Policy:
     """Envuelve DQN / PPO / aleatorio con una interfaz común: reset(seed) y act(obs)."""
 
@@ -123,10 +126,10 @@ def load_policy(algo: str, model_path: str | None, mode: str, epsilon: float, de
         sys.exit("--model es obligatorio para dqn/ppo")
     if algo == "dqn":
         from stable_baselines3 import DQN
-        model = DQN.load(model_path, device=device)
+        model = DQN.load(model_path, device=device, custom_objects=_NO_SCHEDULES)
     else:
         from stable_baselines3 import PPO
-        model = PPO.load(model_path, device=device)
+        model = PPO.load(model_path, device=device, custom_objects=_NO_SCHEDULES)
     return Policy(algo, model, mode, epsilon, n_actions=model.action_space.n), int(model.num_timesteps)
 
 
@@ -235,7 +238,7 @@ def main(argv=None):
             "prediction_mode": policy.prediction_mode, "checkpoint_steps": ckpt_steps,
             "noop_max": args.noop_max, "level_length": level_length if level_length else "",
             "progress": round(r["max_x"] / level_length, 4) if level_length else "",
-            "git_commit": commit,
+            "env_version": ENV_VERSION, "git_commit": commit,
         })
         rows.append(r)
         print(f"[{i+1}/{len(seeds)}] seed={seed} noop={r['noop_used']} max_x={r['max_x']} "
