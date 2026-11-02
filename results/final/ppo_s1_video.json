@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "args": {
+      "algo": "ppo",
+      "model": "models\\ppo\\ppo_s1\\ppo_s1_final.zip",
+      "level": "SuperMarioBros-1-1-v0",
+      "seeds": "200",
+      "mode": "stochastic",
+      "epsilon": 0.05,
+      "noop_max": 30,
+      "max_steps": 5000,
+      "train_seed": null,
+      "device": "cpu",
+      "out": "results\\final",
+      "tag": "ppo_s1_video",
+      "record": true
+    },
+    "env_version": "env-v2",
+    "git_commit": "80a2902",
+    "prediction_mode": "sample",
+    "checkpoint_steps": 3000320
+  },
+  "summary": {
+    "episodes": 1,
+    "completion_rate": 1.0,
+    "max_x_mean": 3161.0,
+    "max_x_std": 0.0,
+    "progress_mean": 1.0,
+    "progress_std": 0.0
+  },
+  "episodes": [
+    {
+      "completed": 1,
+      "max_x": 3161,
+      "steps": 272,
+      "reward": 3561.0,
+      "elapsed_seconds": 2.63,
+      "eval_seed": 200,
+      "noop_used": 1,
+      "death_x": "",
+      "end_x": 3161,
+      "truncated": 0,
+      "algo": "ppo",
+      "seed": "1",
+      "level": "SuperMarioBros-1-1-v0",
+      "episode": 0,
+      "prediction_mode": "sample",
+      "checkpoint_steps": 3000320,
+      "noop_max": 30,
+      "level_length": 3161,
+      "progress": 1.0,
+      "env_version": "env-v2",
+      "git_commit": "80a2902"
+    }
+  ]
+}

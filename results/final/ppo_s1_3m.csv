@@ -1,0 +1,11 @@
+algo,seed,level,episode,completed,max_x,steps,reward,elapsed_seconds,prediction_mode,eval_seed,checkpoint_steps,noop_max,noop_used,level_length,progress,death_x,end_x,truncated,env_version,git_commit
+ppo,1,SuperMarioBros-1-1-v0,0,1,3161,272,3561.0,1.78,sample,200,3000320,30,1,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,1,1,3161,272,3567.0,1.92,sample,201,3000320,30,9,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,2,1,3161,273,3567.0,1.96,sample,202,3000320,30,5,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,3,1,3161,272,3561.0,2.02,sample,203,3000320,30,9,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,4,1,3161,272,3567.0,2.04,sample,204,3000320,30,22,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,5,1,3161,272,3566.0,2.04,sample,205,3000320,30,16,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,6,1,3161,273,3566.0,2.04,sample,206,3000320,30,16,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,7,1,3161,272,3567.0,2.03,sample,207,3000320,30,3,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,8,1,3161,272,3567.0,2.15,sample,208,3000320,30,27,3161,1.0,,3161,0,env-v2,80a2902
+ppo,1,SuperMarioBros-1-1-v0,9,1,3161,272,3567.0,2.15,sample,209,3000320,30,21,3161,1.0,,3161,0,env-v2,80a2902

@@ -1,0 +1,2 @@
+algo,seed,level,episode,completed,max_x,steps,reward,elapsed_seconds,prediction_mode,eval_seed,checkpoint_steps,noop_max,noop_used,level_length,progress,death_x,end_x,truncated,env_version,git_commit
+ppo,1,SuperMarioBros-1-1-v0,0,1,3161,272,3567.0,2.05,sample,100,3000320,30,23,3161,1.0,,3161,0,env-v2,80a2902
