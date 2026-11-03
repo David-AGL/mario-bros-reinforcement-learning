@@ -6,7 +6,9 @@ models/**/*.pkl
 runs/**/events.out.tfevents.*
 
 # Videos generados
-videos/
+# Videos generados por evaluacion local
+videos/live_*.mp4
+videos/*_raw.mp4
 
 # Python
 __pycache__/
