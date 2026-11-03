@@ -43,53 +43,60 @@ DRIVE_VIDEOS = {
     "video_modelobase.mp4": "1ONijfc4zifJadDD0nRzSYi5gf3EPPlrb",
 }
 
-def convert_video_to_h264(video_path: Path):
-    """Convierte un video a H.264 para garantizar compatibilidad con navegadores web."""
-    raw_bytes = video_path.read_bytes()
-    if b"avc1" in raw_bytes:
-        return
+
+def convert_video_to_h264(video_path: Path) -> bool:
+    """Convierte un video a H.264 para garantizar compatibilidad con navegadores web.
+    Retorna True si la conversion fue exitosa o el video ya era h264."""
+    try:
+        raw_bytes = video_path.read_bytes()
+        if b"avc1" in raw_bytes:
+            return True
+    except Exception:
+        return False
 
     tmp_target = video_path.with_name(f"h264_{video_path.name}")
-    # 1. Intentar ffmpeg del sistema (en Linux/WSL suele estar disponible)
+
+    # 1. Intentar ffmpeg del sistema (en Linux suele estar disponible)
     import subprocess
     try:
         cmd = ["ffmpeg", "-y", "-i", str(video_path), "-vcodec", "libx264", "-pix_fmt", "yuv420p", str(tmp_target)]
-        res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        res = subprocess.run(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=120)
         if res.returncode == 0 and tmp_target.exists() and tmp_target.stat().st_size > 1000:
             tmp_target.replace(video_path)
-            return
+            return True
     except Exception:
         pass
 
     # 2. Intentar imageio si está instalado
     try:
         import imageio.v3 as iio
-        frames = iio.imread(video_path)
-        iio.imwrite(tmp_target, frames, fps=15, codec="libx264")
+        frames = list(iio.imiter(str(video_path)))
+        iio.imwrite(str(tmp_target), frames, fps=15, codec="libx264")
         if tmp_target.exists() and tmp_target.stat().st_size > 1000:
             tmp_target.replace(video_path)
-            return
+            return True
     except Exception:
         pass
 
+    return False
+
+
 def play_agent_video(filename: str):
-    """Reproduce el video local si existe; si estamos en la nube (ej. Streamlit Cloud), usa el link directo o descarga."""
+    """Reproduce el video local si existe; si no, usa iframe de Google Drive (mas fiable en nube)."""
     local_path = VIDEOS_DIR / filename
     if local_path.exists() and local_path.stat().st_size > 1000:
         st.video(str(local_path))
         return
 
-    # Si no existe localmente pero está registrado en Drive
+    # Fallback: embed iframe de Drive (funciona en Streamlit Cloud sin problemas de MIME)
     fid = DRIVE_VIDEOS.get(filename)
     if fid:
-        direct_url = f"https://drive.google.com/uc?export=download&id={fid}"
-        try:
-            st.video(direct_url)
-        except Exception:
-            embed_url = f"https://drive.google.com/file/d/{fid}/preview"
-            st.components.v1.iframe(embed_url, height=360)
+        embed_url = f"https://drive.google.com/file/d/{fid}/preview"
+        st.components.v1.iframe(embed_url, height=400)
+        st.caption(f"🌐 Video reproducido desde Google Drive · [{filename}](https://drive.google.com/file/d/{fid}/view)")
     else:
         st.warning(f"Video {filename} no disponible localmente ni en nube.")
+
 
 # ── MODELOS: rutas locales + IDs de Google Drive ──────────────────
 # Para obtener el FILE_ID: Drive → Share → "Anyone with link" →
@@ -511,6 +518,9 @@ with tab_live:
         """
         Esta sección reutiliza directamente la función `run_episode` de `evaluate.py` para correr 
         la política seleccionada cuadro a cuadro sobre el emulador y registrar un video recién generado.
+
+        > **Nota:** La ejecución en vivo requiere las librerías NES (`nes-py`, `gym-super-mario-bros`)
+        > instaladas localmente. En Streamlit Cloud estas librerías no están disponibles.
         """
     )
 
@@ -565,8 +575,22 @@ with tab_live:
                     st.metric("Pasos", f"{res['steps']}")
 
                 if rec_path and rec_path.exists():
-                    convert_video_to_h264(rec_path)
-                    st.video(str(rec_path))
+                    converted = convert_video_to_h264(rec_path)
+                    if converted:
+                        st.video(str(rec_path))
+                    else:
+                        # Si no se pudo convertir, ofrecer descarga directa
+                        with open(rec_path, "rb") as vf:
+                            st.download_button(
+                                label="⬇️ Descargar video generado (.mp4)",
+                                data=vf,
+                                file_name=rec_path.name,
+                                mime="video/mp4",
+                            )
+                        st.info(
+                            "ℹ️ El video fue grabado pero no pudo convertirse a H.264 en este entorno. "
+                            "Descárgalo y ábrelo en VLC u otro reproductor."
+                        )
 
             except ImportError as ie:
                 st.warning(

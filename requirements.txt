@@ -15,4 +15,5 @@ psutil
 huggingface_hub
 streamlit
 gdown
-imageio[ffmpeg]
+imageio
+imageio-ffmpeg
