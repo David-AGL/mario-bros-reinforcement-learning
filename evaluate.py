@@ -155,7 +155,15 @@ def run_episode(env, policy: Policy, eval_seed: int, max_steps: int = 5000,
         if writer is None:
             record_path.parent.mkdir(parents=True, exist_ok=True)
             h, w = frame.shape[:2]
-            writer = cv2.VideoWriter(str(record_path), cv2.VideoWriter_fourcc(*"mp4v"), VIDEO_FPS, (w, h))
+            # Intentar codecs compatibles con navegadores web (avc1 / H264)
+            fourcc = cv2.VideoWriter_fourcc(*"avc1")
+            writer = cv2.VideoWriter(str(record_path), fourcc, VIDEO_FPS, (w, h))
+            if not writer.isOpened():
+                fourcc = cv2.VideoWriter_fourcc(*"H264")
+                writer = cv2.VideoWriter(str(record_path), fourcc, VIDEO_FPS, (w, h))
+            if not writer.isOpened():
+                fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+                writer = cv2.VideoWriter(str(record_path), fourcc, VIDEO_FPS, (w, h))
         writer.write(cv2.cvtColor(frame, cv2.COLOR_RGB2BGR))
 
     if record_path is not None:

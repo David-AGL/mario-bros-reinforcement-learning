@@ -1,0 +1,6 @@
+algo,seed,level,episode,completed,max_x,steps,reward,elapsed_seconds,prediction_mode,eval_seed,checkpoint_steps,noop_max,noop_used,level_length,progress,death_x,end_x,truncated,env_version,git_commit
+dqn,1,SuperMarioBros-1-1-v0,0,0,2467,386,2335.0,3844.5,fine_tuning_advanced,100,450000,30,15,3161,0.7804,2467,2467,0,env-v2,colab
+dqn,1,SuperMarioBros-1-1-v0,1,0,1526,183,1432.0,3847.1,fine_tuning_advanced,101,450000,30,15,3161,0.4828,1526,1526,0,env-v2,colab
+dqn,1,SuperMarioBros-1-1-v0,2,0,1434,243,1327.0,3850.5,fine_tuning_advanced,102,450000,30,15,3161,0.4537,1434,1434,0,env-v2,colab
+dqn,1,SuperMarioBros-1-1-v0,3,0,677,58,607.0,3851.3,fine_tuning_advanced,103,450000,30,15,3161,0.2142,677,677,0,env-v2,colab
+dqn,1,SuperMarioBros-1-1-v0,4,0,1434,137,1349.0,3853.2,fine_tuning_advanced,104,450000,30,15,3161,0.4537,1434,1434,0,env-v2,colab

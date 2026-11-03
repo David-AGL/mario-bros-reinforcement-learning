@@ -13,3 +13,6 @@ pandas
 matplotlib
 psutil
 huggingface_hub
+streamlit
+gdown
+imageio[ffmpeg]
