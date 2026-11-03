@@ -42,7 +42,7 @@ mario-bros-reinforcement-learning/
 │   └── measure_level_length.py
 ├── notebooks/
 │   ├── colab_train.ipynb     # Lanzador de entrenamiento en Colab
-│   └── model_development.ipynb  # Esqueleto del entregable final
+│   └── model_development.ipynb  # Informe final de entrenamiento y evaluación
 ├── results/                  # CSV/JSON de evaluación
 ├── models/                   # checkpoints (NO van a Git; ver §6)
 ├── runs/                     # logs TensorBoard + episodes.csv
@@ -239,7 +239,7 @@ Antes de subir un notebook ejecutado: *Edit → Clear all outputs*. **Pendiente 
   python evaluate.py --algo random --seeds 100-104 --out results/val
   ```
 - Preparar el script que evalúe cada checkpoint nuevo en 1-1 con las semillas 100–104 y guarde `results/val_*.csv` (día 3).
-- Revisar la política de `progress` (§9) y completar la sección del problema en `model_development.ipynb`.
+- Revisar la política de `progress` (§9) y mantener actualizado el informe de entrenamiento y evaluación en `model_development.ipynb`.
 
 ### 8.4 Decisiones que hay que tomar en equipo (día 2)
 1. **Presupuesto de pasos** igual para DQN y PPO (referencia en Colab ≈ 82–94 pasos/s: 1 M pasos ≈ 3 h; medir PPO antes de fijarlo).

@@ -1,17 +1,16 @@
 # `notebooks/model_development.ipynb`
 
-Notebook de desarrollo del entregable final para comparar DQN y PPO y analizar el comportamiento de los agentes como jugadores automáticos.
+Notebook de análisis del entregable final para comparar DQN y PPO y analizar el comportamiento de los agentes como jugadores automáticos. Consolida los experimentos ejecutados por los lanzadores de Colab/Kaggle y el experimento de Transfer Learning, sin reemplazar esos notebooks.
 
 ## Celdas conceptuales
 
-1. **Problema:** define el objetivo de playtesting automático: medir progreso, completado y zonas donde muere el agente.
-2. **Entorno:** fija `env-v1`, las transformaciones visuales, los niveles de entrenamiento/no vistos y el uso de `levels.json`.
-3. **Algoritmos:** presenta DQN como foco, con replay buffer, red objetivo y epsilon-greedy; presenta PPO como baseline con política estocástica, GAE y clipping.
-4. **Protocolo:** establece un episodio por semilla, semillas de validación `100–104`, evaluación final `200–209`, no-ops `0–30`, epsilon DQN fijo `0.05` y resultado determinista secundario.
-5. **Carga de datos:** importa pandas, glob y Path; `RESULTS` apunta a `results/`; `load(pattern)` busca todos los CSV y los concatena en un único DataFrame. Si no encuentra archivos, devuelve un DataFrame vacío.
-6. **Resultados:** deja el espacio para generar tablas y curvas a partir de los datos crudos, separando niveles vistos y no vistos.
-7. **Tabla comparativa:** agrupa por algoritmo, nivel y modo de predicción; calcula cantidad de episodios, media de `max_x` y media de `completed`, y muestra la tabla si hay datos.
-8. **Generalización y limitaciones:** indica que los niveles no vistos deben evaluarse al final y que no se debe afirmar que el agente completó un nivel si únicamente se observó progreso.
+1. **Contexto:** define el objetivo de playtesting automático, los usuarios y la decisión de acción que apoya el agente.
+2. **Datos y entorno:** explica que las trayectorias se generan con `gym-super-mario-bros`/`nes-py`, el preprocesamiento visual de `env-v2`, las recompensas y las variables que no entran a la política.
+3. **Algoritmos y decisiones:** presenta DQN como foco, PPO como baseline y justifica replay buffer, red objetivo, epsilon-greedy, GAE y clipping.
+4. **Entrenamiento:** documenta el paso a paso común y distingue Colab/Kaggle como lanzadores de infraestructura de Transfer Learning como variante experimental.
+5. **Protocolo:** establece un episodio por semilla, validación `100–104`, evaluación final `200–209`, no-ops `0–30`, epsilon DQN fijo `0.05` y resultado determinista secundario.
+6. **Análisis exploratorio:** carga todos los CSV de `results/` y analiza recompensas, duración, progreso, completitud y posiciones de muerte, que sustituyen el EDA de un dataset estático.
+7. **Resultados e insights:** genera un resumen agrupado y una gráfica de progreso, y deja criterios explícitos para comparar algoritmos, niveles vistos/no vistos y entrenamiento desde cero/transfer learning.
+8. **Generalización y despliegue:** documenta limitaciones, evaluación en niveles no vistos y el uso de Streamlit para auditar agentes.
 
-El notebook no genera datos artificiales ni escribe métricas a mano: consume los CSV producidos por `evaluate.py`. La función de carga recursiva permite incorporar nuevas corridas sin cambiar el análisis.
-
+El notebook no genera datos artificiales ni escribe métricas a mano: consume los CSV producidos por `evaluate.py`. La función de carga recursiva permite incorporar nuevas corridas sin cambiar el análisis. Si no existen resultados, muestra avisos en lugar de fabricar conclusiones.
